@@ -115,6 +115,39 @@ public class Labirints {
 	}
 	public static Point[] floydWarshall() {
 		// atrast ceļu, atgriež ceļa koordinātes
+		int v = rows*cols;
+		int[][] dist = new int[v][v];
+
+		int INF = Integer.MAX_VALUE;
+		for(int i=0; i<v; i++){
+			for(int j=0; j<v; j++){
+				dist[i][j] = INF;
+			}
+		}
+
+		for(int i=0; i<v; i++)
+			dist[i][i] = 0;
+		
+
+		for (int k=0; k<v; k++) {
+			for (int i=0; i<v; i++) {
+				for (int j=0; j<v; j++) {
+					if (dist[i][k] + dist[k][j] < dist[i][j])
+						dist[i][j] = dist[i][k] + dist[k][j];
+				}
+			}
+		}
+
+		for(int i=0; i<v; i++){
+			for(int j=0; j<v; j++){
+				if(dist[i][j]==INF)
+					System.out.print("X" + "\t");
+				else
+					System.out.print(dist[i][j] + "\t");
+			}
+			System.out.println();
+		}
+
 		Point[] res = new Point[1];
 		return res;
 	}
