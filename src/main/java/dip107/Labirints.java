@@ -1,4 +1,5 @@
 package dip107;
+import java.util.Random;
 import java.util.Scanner;
 
 class Point {
@@ -30,6 +31,7 @@ public class Labirints {
 		}
 		System.out.print("method number (1-3):");
 		int mode = sc.nextInt();
+		sc.close();
 		Point[] path;
 		switch (mode) {
 			case 1: //1. algoritms
@@ -59,6 +61,30 @@ public class Labirints {
 	public static void generate() {
 		l = new int[rows][cols];
 		//ģenerēt l(abirintu)
+
+		// Artis learning to code
+		Random rand = new Random();
+		int int_random;
+		
+		// Fill maze with random 0 and 1
+		for(int i=0; i<rows; i++){
+			for(int j=0; j<cols; j++){
+				int_random = rand.nextInt(2);
+				l[i][j] = int_random;
+			}
+		}
+
+		// Reset start and finish
+		l[0][0] = 0;
+		l[rows-1][cols-1] = 0;
+
+		// Print maze generated
+		for(int i=0; i<rows; i++){
+			for(int j=0; j<cols; j++){
+				System.out.print(l[i][j] + " ");
+			}
+			System.out.println();
+		}
 	}
 	// Iziešanas algoritmu tips
 	public static Point[] aStar() {
