@@ -4,7 +4,18 @@ import java.util.Scanner;
 
 class Point {
 	int x, y;
+
+	public Point(){
+		x=0;
+		y=0;
+	}
+
+	public Point(int x, int y){
+		this.x=x;
+		this.y=y;
+	}
 }
+
 public class Labirints {
 	static int[][] l;//Labirints
 	static int rows, cols;//Labirinta dimensijas
@@ -29,7 +40,8 @@ public class Labirints {
 		else {
 			generate();
 		}
-		System.out.print("method number (1-3):");
+
+		System.out.print("method number (1-5):");
 		int mode = sc.nextInt();
 		sc.close();
 		Point[] path;
@@ -46,9 +58,13 @@ public class Labirints {
 			case 4: //4. algoritms
 				path = depthFirstSearch();
 				break;
+			case 5: //5. algoritms
+				path = testArtis();
+				break;
 			default://netika izvēlēts neviens algoritms
 				path = new Point[0]; // rezultātu izvade
 		}
+
 		// rezultātu izvade
 		System.out.println("results:");
 		for (Point p : path) {
@@ -105,6 +121,22 @@ public class Labirints {
 	public static Point[] depthFirstSearch() {
 		// atrast ceļu, atgriež ceļa koordinātes
 		Point[] res = new Point[1];
+		return res;
+	}
+	public static Point[] testArtis() {
+		// atrast ceļu, atgriež ceļa koordinātes
+		Point[] res;
+
+		// aprēķinu masīva izmēru - max ceļa garumu
+		if(rows > cols){
+			res = new Point[(rows/2 + rows%2) * cols];
+		}else{
+			res = new Point[(cols/2 + cols%2) * rows];
+		}
+		//System.out.print(res.length);
+
+		res[0] = new Point();
+
 		return res;
 	}
 }
