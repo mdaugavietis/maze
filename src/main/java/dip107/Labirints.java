@@ -1,6 +1,5 @@
 package dip107;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -276,45 +275,44 @@ public class Labirints {
 		return res;
 	}
 
-    public static Point[] depthFirstSearch() {
+	public static Point[] depthFirstSearch() {
 
-			//TODO dažos variantos rekursija nomirst stackoverflow del jo metodei jaiet tals cels atpakal, pievienot system.nanotime();
+		List<Point> currentPath = new ArrayList<>();
+		currentPath.add(new Point(0, 0));
+		Set<Point> visited = new HashSet<>();
+		visited.add(new Point(0, 0));
+		return dfsHelper(currentPath, visited);
+}
 
-	    List<Point> currentPath = new ArrayList<>();
-	    currentPath.add(new Point(0, 0));
-	    Set<Point> visited = new HashSet<>();
-	    visited.add(new Point(0, 0));
-	    return dfsHelper(currentPath, visited);
-	}
+private static Point[] dfsHelper(List<Point> currentPath, Set<Point> visited) {
+		Point current = currentPath.get(currentPath.size() - 1);
+		int x = current.x;
+		int y = current.y;
 
-	private static Point[] dfsHelper(List<Point> currentPath, Set<Point> visited) {
-	    Point current = currentPath.get(currentPath.size() - 1);
-	    int x = current.x;
-	    int y = current.y;
+		if (x == l.length - 1 && y == l[0].length - 1) { // atrada beigas
+				return currentPath.toArray(new Point[currentPath.size()]);
+		}
 
-	    if (x == l.length - 1 && y == l[0].length - 1) { // atrada beigas
-	        return currentPath.toArray(new Point[currentPath.size()]);
-	    }
+		int[][] directions = { { 1, 0 }, { 0, 1 }, { 0, -1 }, { -1, 0 } };
+		for (int[] direction : directions) {
+				int nextX = x + direction[0];
+				int nextY = y + direction[1];
+				if (nextX >= 0 && nextX < l.length && nextY >= 0 && nextY < l[0].length) {
+						if (l[nextY][nextX] == 0 && !visited.contains(new Point(nextX, nextY))) {
+								visited.add(new Point(nextX, nextY));
+								currentPath.add(new Point(nextX, nextY));
+								Point[] result = dfsHelper(currentPath, visited);
+								if (result != null) {
+										return result; // found path, return it
+								}
+								currentPath.remove(currentPath.size() - 1);
+						}
+				}
+		}
 
-	    int[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
-	    for (int[] direction : directions) {
-	        int nextX = x + direction[0];
-	        int nextY = y + direction[1];
-	        if (nextX >= 0 && nextX < l.length && nextY >= 0 && nextY < l[0].length) {
-	            if (l[nextX][nextY] == 0 && !visited.contains(new Point(nextX, nextY))) {
-	                visited.add(new Point(nextX, nextY));
-	                currentPath.add(new Point(nextX, nextY));
-	                Point[] result = dfsHelper(currentPath, visited);
-	                if (result != null) {
-	                    return result; // found path, return it
-	                }
-	                currentPath.remove(currentPath.size() - 1);
-	            }
-	        }
-	    }
+		return null; // no path found in this branch
+}
 
-	    return null; // no path found in this branch
-	}
 
 
 	public static Point[] testArtis() {
