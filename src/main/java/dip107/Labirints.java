@@ -182,8 +182,8 @@ public class Labirints {
 	            int i = 0;
 	            while (node != null) {
 	            	Point p = new Point();
-	            	p.x=node[0];
-	            	p.y=node[1];
+	            	p.y=node[0];
+	            	p.x=node[1];
 	            	way[i] = p;
 	            	i++;
 	                node = parents.get(node[0] + "," + node[1]);
@@ -199,18 +199,18 @@ public class Labirints {
 	        visited.add(current[0] + "," + current[1]);
 
 	        for (int[] direction : directions) {
-	            int x = current[0] + direction[0];
-	            int y = current[1] + direction[1];
+	            int y = current[0] + direction[0];
+	            int x = current[1] + direction[1];
 
-	            if (x >= 0 && x < l.length && y >= 0 && y < l[0].length) {
-	                if (l[x][y] == 0 && !visited.contains(x + "," + y)) {
+	            if (y >= 0 && y < l.length && x >= 0 && x < l[0].length) {
+	                if (l[y][x] == 0 && !visited.contains(y + "," + x)) {
 	                    int g = current[2] + 1;
-	                    int h = Math.abs(x - l.length - 1) + Math.abs(y - l[0].length - 1);
+	                    int h = Math.abs(y - l.length - 1) + Math.abs(x - l[0].length - 1);
 	                    int f = g + h;
 
-	                    queue.offer(new int[] {x, y, g, f});
-	                    visited.add(x + "," + y);
-	                    parents.put(x + "," + y, current);
+	                    queue.offer(new int[] {y, x, g, f});
+	                    visited.add(y + "," + x);
+	                    parents.put(y + "," + x, current);
 	                }
 	            }
 	        }
@@ -218,6 +218,7 @@ public class Labirints {
 
 	    return null;
 	}
+	
 	public static Point[] dijkstra() {
 		int[][] depths = new int[rows][cols];
 		/*
