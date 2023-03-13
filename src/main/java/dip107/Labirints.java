@@ -38,8 +38,8 @@ public class Labirints {
 		sc.nextLine();
 		System.out.print("Auto fill maze (y/n)?");
 		char ans = sc.nextLine().charAt(0);
+		l = new int[rows][cols];
 		if (ans == 'n') {
-			l = new int[rows][cols];
 			for (int i=0; i<rows; i++)
 				for (int j=0; j<cols; j++)
 					l[i][j] = sc.nextInt();
@@ -82,26 +82,83 @@ public class Labirints {
 	}
 	// Ģenerēšanas funkcija
 	public static void generate() {
-		l = new int[rows][cols];
-		//ģenerēt l(abirintu)
 
-		// Artis learning to code
-		Random rand = new Random();
-		int int_random;
+		Random random = new Random();
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				l[i][j] = 1;
+		    }
+		}
+
+		int x = 0;
+		int y = 0;
+		l[0][0] = 0;
+		List<int[]> directions = new ArrayList<>();
+		directions.add(new int[] {0, 1}); // right
+		directions.add(new int[] {0, -1}); // left
+		directions.add(new int[] {1, 0}); // down
+		directions.add(new int[] {-1, 0}); // up
+		Map<String, int[]> parents = new HashMap<>();
 		
-		// Fill maze with random 0 and 1
-		for(int i=0; i<rows; i++){
-			for(int j=0; j<cols; j++){
-				int_random = rand.nextInt(2);
-				l[i][j] = int_random;
+		outer:
+		while (x != rows-1 || y != cols-1) {
+			Collections.shuffle(directions);
+			//System.out.print(x + " " + y);
+			int trys = 0;
+			for (int[] direction : directions) {
+				trys++;
+				int dx = direction[0];
+		    	int dy = direction[1];
+		    	int nx = x + dx;
+		    	int ny = y + dy;
+
+		    	if (nx < 0 || nx >= rows || ny < 0 || ny >= cols) {
+		    		continue;
+		    	}
+
+		    	if (l[nx][ny] == 1) {
+		    		int[] parent = new int[2];
+		    		parent[0]=x;
+		    		parent[1]=y;
+		    		l[nx][ny] = 0;
+                	x=nx;
+                	y=ny;
+                	parents.put(x + "," + y, parent);
+                	break;
+		    	}
+        	}
+			if (trys==4) {
+				int[] parent = new int[2];
+				while (true) {
+					parent = parents.get(x + "," + y);
+					if (parent == null)
+						break outer;
+					x = parent[0];
+					y = parent[1];
+					if (x+1<rows) {
+						if (l[x+1][y] == 0) {
+							break;
+						}
+					}
+					if (x-1>=0) {
+						if (l[x-1][y] == 0) {
+							break;
+						}
+					}
+					if (y+1<cols) {
+						if (l[x][y+1] == 0) {
+							break;
+						}
+					}
+					if (y-1>=0) {
+						if (l[x][y-1] == 0) {
+							break;
+						}
+					}
+				}
 			}
 		}
 
-		// Reset start and finish
-		l[0][0] = 0;
-		l[rows-1][cols-1] = 0;
-
-		// Print maze generated
 		for(int i=0; i<rows; i++){
 			for(int j=0; j<cols; j++){
 				System.out.print(l[i][j] + " ");
@@ -111,9 +168,57 @@ public class Labirints {
 	}
 	// Iziešanas algoritmu tips
 	public static Point[] aStar() {
-		// atrast ceļu, atgriež ceļa koordinātes
-		Point[] res = new Point[1];
-		return res;
+	    PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(node -> node[3]));
+	    queue.offer(new int[] {0, 0, 0, 0});
+	    Set<String> visited = new HashSet<>();
+	    Map<String, int[]> parents = new HashMap<>();
+	    int[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+
+	    while (!queue.isEmpty()) {
+	        int[] current = queue.poll();
+
+	        if (current[0] == l.length-1 && current[1] == l[0].length-1) {
+	        	Point[] way = new Point[l.length * l[0].length];
+	            //List<int[]> path = new ArrayList<>();
+	            int[] node = current;
+	            int i = 0;
+	            while (node != null) {
+	            	Point p = new Point();
+	            	p.x=node[0];
+	            	p.y=node[1];
+	            	way[i] = p;
+	            	i++;
+	                node = parents.get(node[0] + "," + node[1]);
+	            }
+	            Point[] path = new Point[i];
+	            i--;
+	            for (int j=0;i>=0;i--,j++) {
+	            	path[j]=way[i];
+	            }
+	            return path;
+	        }
+
+	        visited.add(current[0] + "," + current[1]);
+
+	        for (int[] direction : directions) {
+	            int x = current[0] + direction[0];
+	            int y = current[1] + direction[1];
+
+	            if (x >= 0 && x < l.length && y >= 0 && y < l[0].length) {
+	                if (l[x][y] == 0 && !visited.contains(x + "," + y)) {
+	                    int g = current[2] + 1;
+	                    int h = Math.abs(x - l.length - 1) + Math.abs(y - l[0].length - 1);
+	                    int f = g + h;
+
+	                    queue.offer(new int[] {x, y, g, f});
+	                    visited.add(x + "," + y);
+	                    parents.put(x + "," + y, current);
+	                }
+	            }
+	        }
+	    }
+
+	    return null;
 	}
 	public static Point[] dijkstra() {
 		// atrast ceļu, atgriež ceļa koordinātes
