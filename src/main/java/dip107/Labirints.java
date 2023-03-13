@@ -50,7 +50,7 @@ public class Labirints {
 		else {
 			generate();
 		}
-
+		pprint(null);
 		System.out.print("method number (1-5):");
 		int mode = sc.nextInt();
 		sc.close();
@@ -82,6 +82,8 @@ public class Labirints {
 				System.out.printf("(%d,%d) ", p.y, p.x);
 			}
 		}
+		System.out.println();
+		pprint(path);
 	}
 	// Ģenerēšanas funkcija
 	public static void generate() {
@@ -161,13 +163,6 @@ public class Labirints {
 				}
 			}
 		}
-
-		for(int i=0; i<rows; i++){
-			for(int j=0; j<cols; j++){
-				System.out.print(l[i][j] + " ");
-			}
-			System.out.println();
-		}
 	}
 	// Iziešanas algoritmu tips
 	public static Point[] aStar() {
@@ -224,12 +219,49 @@ public class Labirints {
 	    return null;
 	}
 	public static Point[] dijkstra() {
-		// atrast ceļu, atgriež ceļa koordinātes
-		Point[] res = new Point[1];
-		return res;
+		int[][] depths = new int[rows][cols];
+		/*
+		// list of unvisited nodes priority queue?
+		PriorityQueue<Point> unvisited = new PriorityQueue<Point>(rows*cols, Comparator.comparing());
+		// loop through every position appending to visited
+		for (int y = 0; y < rows; y++) {
+			for (int x = 0; x < cols; x++) {
+				if (l[y][x] == 0) {
+					unvisited.add();
+				}
+			}
+		}*/
+		//
+		/*
+		for in.Scan() {
+			s = in.Text()
+			height = append(height, make([]node, len(s)))
+			for i, char := range s {
+				if char == 'S' {
+					start = pos{x: i, y: count}
+					height[start.y][start.x].height = 0
+					unvisited = append(unvisited, start)
+					continue
+				} else if char == 'E' {
+					end = pos{x: i, y: count}
+					height[end.y][end.x].height = 'z' - 'a'
+					height[end.y][end.x].distance = math.MaxInt
+					unvisited = append(unvisited, end)
+				} else {
+					height[count][i].height = int(char - 'a')
+					if char == 'a' { //p2
+						apos[pos{x: i, y: count}] = true //p2
+					} //p2
+				}
+			}
+			count++*/
+			// fmt.Println(s)
+		return null;
 	}
+
 	public static Point[] floydWarshall() {
 		// atrast ceļu, atgriež ceļa koordinātes
+
 		int v = rows*cols;
 		int[][] dist = new int[v][v];
 
@@ -323,5 +355,28 @@ public class Labirints {
 		res[0] = new Point();
 
 		return res;
+	}
+
+	// Pretty printing for debugging
+	public static void pprint(Point[] path) {
+		char[][] out = new char[rows][cols];
+		if (path != null) {
+			for (Point p: path) {
+				out[p.y][p.x] = '+';
+			}
+		}
+		for (int y = 0; y < rows; y++) {
+			for (int x = 0; x < cols; x++) {
+				if (out[y][x] != 0) {
+					System.out.print('+');
+				} else if (l[y][x] == 0) {
+					System.out.print('.');
+				} else if (l[y][x] == 1) {
+					System.out.print('#');
+				}
+				System.out.print(' ');
+			}
+			System.out.println();
+		}
 	}
 }
