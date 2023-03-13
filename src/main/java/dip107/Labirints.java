@@ -94,51 +94,69 @@ public class Labirints {
 				l[i][j] = 1;
 		    }
 		}
+		l[rows-1][cols-1]=0;
+		l[rows-2][cols-1]=0;
+		l[rows-1][cols-2]=0;
 
 		int x = 0;
 		int y = 0;
 		l[0][0] = 0;
 		int[][][] directions = {
-				  {{0, 1}, {0, -1}, {1, 0}, {-1, 0}},
-				  {{0, -1}, {0, 1}, {1, 0}, {-1, 0}},
-				  {{1, 0}, {-1, 0}, {0, 1}, {0, -1}},
-				  {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+				  {{0, 2}, {0, -2}, {2, 0}, {-2, 0}},
+				  {{0, -2}, {0, 2}, {2, 0}, {-2, 0}},
+				  {{2, 0}, {-2, 0}, {0, 2}, {0, -2}},
+				  {{-2, 0}, {2, 0}, {0, -2}, {0, 2}}
 				};
+
 		Map<String, int[]> parents = new HashMap<>();
 		
 		outer:
-		while (x != rows-1 || y != cols-1) {
+		while (y != rows-1 || x != cols-1) {
 			int randDir = random.nextInt(4);
 			int trys = 0;
 			for (int[] direction : directions[randDir]) {
 				trys++;
-				int dx = direction[0];
-		    	int dy = direction[1];
-		    	int nx = x + dx;
+				int dy = direction[0];
+		    	int dx = direction[1];
 		    	int ny = y + dy;
+		    	int nx = x + dx;
 
-		    	if (nx < 0 || nx >= rows || ny < 0 || ny >= cols) {
+		    	if (ny < 0 || ny >= rows || nx < 0 || nx >= cols) {
 		    		continue;
 		    	}
 
-		    	if (l[nx][ny] == 1) {
+		    	if (l[ny][nx] == 1) {
 		    		int[] parent = new int[2];
-		    		parent[0]=x;
-		    		parent[1]=y;
-		    		l[nx][ny] = 0;
+		    		parent[0]=y;
+		    		parent[1]=x;
+		    		l[ny][nx] = 0;
+		    		int sx = 0, sy = 0;
+		    		if (dx==2) {
+		    			sx = 1;
+		    		}
+		    		if (dx==-2) {
+		    			sx = -1;
+		    		}
+		    		if (dy==2) {
+		    			sy = 1;
+		    		}
+		    		if (dy==-2) {
+		    			sy = -1;
+		    		}
+		    		l[y+sy][x+sx]=0;
                 	x=nx;
                 	y=ny;
-                	parents.put(x + "," + y, parent);
+                	parents.put(y + "," + x, parent);
                 	break;
 		    	}
         	}
 			if (trys==4) {
 				int[] parent = new int[2];
-				parent = parents.get(x + "," + y);
+				parent = parents.get(y + "," + x);
 				if (parent == null)
 					break outer;
-				x = parent[0];
-				y = parent[1];
+				y = parent[0];
+				x = parent[1];
 			}
 		}
 	}
