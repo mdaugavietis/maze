@@ -274,6 +274,68 @@ public class Labirints {
 		Point[] res = new Point[1];
 		return res;
 	}
+// Rin versija DFS
+// 	public static Point[] depthFirstSearch() {
+// 		int x = 0;
+// 		int y = 0;
+// 		int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+// 		Map<String, int[]> parents = new HashMap<>();
+// 		Set<String> visited = new HashSet<>();
+		
+// 		outer:
+// 		while (true) {
+// 			if (y == l.length-1 && x == l[0].length-1) {
+// 	        	Point[] way = new Point[l.length * l[0].length];
+// 	            //List<int[]> path = new ArrayList<>();
+// 	            int[] node = new int[2];
+// 	            node[0]=y;
+// 	            node[1]=x;
+// 	            int i = 0;
+// 	            while (node != null) {
+// 	            	Point p = new Point();
+// 	            	p.y=node[0];
+// 	            	p.x=node[1];
+// 	            	way[i] = p;
+// 	            	i++;
+// //	            	System.out.println(x);
+// //	            	System.out.println(y);
+// 	                node = parents.get(node[0] + "," + node[1]);
+// 	            }
+// 	            Point[] path = new Point[i];
+// 	            i--;
+// 	            for (int j=0;i>=0;i--,j++) {
+// 	            	path[j]=way[i];
+// 	            }
+// 	            return path;
+// 	        }
+			
+// 			for (int[] direction : directions) {
+// 		    	int ny = y + direction[0];
+// 		    	int nx = x + direction[1];
+
+// 		    	if (ny < 0 || ny >= rows || nx < 0 || nx >= cols) {
+// 		    		continue;
+// 		    	}
+
+// 		    	if (l[ny][nx] == 0 && !visited.contains(ny + "," + nx)) {
+// 		    		int[] parent = new int[2];
+// 		    		parent[0]=y;
+// 		    		parent[1]=x;
+// 		    		visited.add(ny + "," + nx);
+//                 	x=nx;
+//                 	y=ny;
+//                 	parents.put(y + "," + x, parent);
+//                 	continue outer;
+// 		    	}
+//         	}
+// 			int[] parent = new int[2];
+// 			parent = parents.get(y + "," + x);
+// 			if (parent == null)
+// 				return null;
+// 			y = parent[0];
+// 			x = parent[1];
+// 		}
+// 	}
 
 	public static Point[] depthFirstSearch() {
 
