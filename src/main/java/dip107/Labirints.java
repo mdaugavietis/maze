@@ -1,6 +1,13 @@
 package dip107;
+import java.util.ArrayList;
+
+import java.util.HashSet;
+import java.util.List;
+
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
+
 
 class Point {
 	int x, y;
@@ -151,11 +158,48 @@ public class Labirints {
 		Point[] res = new Point[1];
 		return res;
 	}
-	public static Point[] depthFirstSearch() {
-		// atrast ceļu, atgriež ceļa koordinātes
-		Point[] res = new Point[1];
-		return res;
+
+    public static Point[] depthFirstSearch() {
+
+			//TODO dažos variantos rekursija nomirst stackoverflow del jo metodei jaiet tals cels atpakal, pievienot system.nanotime();
+
+	    List<Point> currentPath = new ArrayList<>();
+	    currentPath.add(new Point(0, 0));
+	    Set<Point> visited = new HashSet<>();
+	    visited.add(new Point(0, 0));
+	    return dfsHelper(currentPath, visited);
 	}
+
+	private static Point[] dfsHelper(List<Point> currentPath, Set<Point> visited) {
+	    Point current = currentPath.get(currentPath.size() - 1);
+	    int x = current.x;
+	    int y = current.y;
+
+	    if (x == l.length - 1 && y == l[0].length - 1) { // atrada beigas
+	        return currentPath.toArray(new Point[currentPath.size()]);
+	    }
+
+	    int[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+	    for (int[] direction : directions) {
+	        int nextX = x + direction[0];
+	        int nextY = y + direction[1];
+	        if (nextX >= 0 && nextX < l.length && nextY >= 0 && nextY < l[0].length) {
+	            if (l[nextX][nextY] == 0 && !visited.contains(new Point(nextX, nextY))) {
+	                visited.add(new Point(nextX, nextY));
+	                currentPath.add(new Point(nextX, nextY));
+	                Point[] result = dfsHelper(currentPath, visited);
+	                if (result != null) {
+	                    return result; // found path, return it
+	                }
+	                currentPath.remove(currentPath.size() - 1);
+	            }
+	        }
+	    }
+
+	    return null; // no path found in this branch
+	}
+
+
 	public static Point[] testArtis() {
 		// atrast ceļu, atgriež ceļa koordinātes
 		Point[] res;
