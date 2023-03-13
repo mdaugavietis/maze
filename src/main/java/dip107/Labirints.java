@@ -87,39 +87,34 @@ public class Labirints {
 	}
 	// Ģenerēšanas funkcija
 	public static void generate() {
-
 		Random random = new Random();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				l[i][j] = 1;
 		    }
 		}
+		l[0][0] = 0;
 		l[rows-1][cols-1]=0;
 		l[rows-2][cols-1]=0;
 		l[rows-1][cols-2]=0;
-
 		int x = 0;
 		int y = 0;
-		l[0][0] = 0;
 		int[][][] directions = {
-				  {{0, 2}, {0, -2}, {2, 0}, {-2, 0}},
-				  {{0, -2}, {0, 2}, {2, 0}, {-2, 0}},
-				  {{2, 0}, {-2, 0}, {0, 2}, {0, -2}},
-				  {{-2, 0}, {2, 0}, {0, -2}, {0, 2}}
+				  {{0, 2, 0, 1}, {0, -2, 0, -1}, {2, 0, 1, 0}, {-2, 0, -1, 0}},
+				  {{0, -2, 0, -1}, {0, 2, 0, 1}, {2, 0, 1, 0}, {-2, 0, -1, 0}},
+				  {{2, 0, 1, 0}, {-2, 0, -1, 0}, {0, 2, 0, 1}, {0, -2, 0, -1}},
+				  {{-2, 0, -1, 0}, {2, 0, 1, 0}, {0, -2, 0, -1}, {0, 2, 0, 1}}
 				};
-
 		Map<String, int[]> parents = new HashMap<>();
 		
 		outer:
 		while (y != rows-1 || x != cols-1) {
 			int randDir = random.nextInt(4);
-			int trys = 0;
 			for (int[] direction : directions[randDir]) {
-				trys++;
-				int dy = direction[0];
-		    	int dx = direction[1];
-		    	int ny = y + dy;
-		    	int nx = x + dx;
+		    	int ny = y + direction[0];
+		    	int nx = x + direction[1];
+		    	int sy = y + direction[2];
+		    	int sx = x + direction[3];
 
 		    	if (ny < 0 || ny >= rows || nx < 0 || nx >= cols) {
 		    		continue;
@@ -130,34 +125,19 @@ public class Labirints {
 		    		parent[0]=y;
 		    		parent[1]=x;
 		    		l[ny][nx] = 0;
-		    		int sx = 0, sy = 0;
-		    		if (dx==2) {
-		    			sx = 1;
-		    		}
-		    		if (dx==-2) {
-		    			sx = -1;
-		    		}
-		    		if (dy==2) {
-		    			sy = 1;
-		    		}
-		    		if (dy==-2) {
-		    			sy = -1;
-		    		}
-		    		l[y+sy][x+sx]=0;
+		    		l[sy][sx] = 0;
                 	x=nx;
                 	y=ny;
                 	parents.put(y + "," + x, parent);
-                	break;
+                	continue outer;
 		    	}
         	}
-			if (trys==4) {
-				int[] parent = new int[2];
-				parent = parents.get(y + "," + x);
-				if (parent == null)
-					break outer;
-				y = parent[0];
-				x = parent[1];
-			}
+			int[] parent = new int[2];
+			parent = parents.get(y + "," + x);
+			if (parent == null)
+				break outer;
+			y = parent[0];
+			x = parent[1];
 		}
 	}
 	// Iziešanas algoritmu tips
