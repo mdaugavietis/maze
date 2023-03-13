@@ -98,19 +98,19 @@ public class Labirints {
 		int x = 0;
 		int y = 0;
 		l[0][0] = 0;
-		List<int[]> directions = new ArrayList<>();
-		directions.add(new int[] {0, 1}); // right
-		directions.add(new int[] {0, -1}); // left
-		directions.add(new int[] {1, 0}); // down
-		directions.add(new int[] {-1, 0}); // up
+		int[][][] directions = {
+				  {{0, 1}, {0, -1}, {1, 0}, {-1, 0}},
+				  {{0, -1}, {0, 1}, {1, 0}, {-1, 0}},
+				  {{1, 0}, {-1, 0}, {0, 1}, {0, -1}},
+				  {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+				};
 		Map<String, int[]> parents = new HashMap<>();
 		
 		outer:
 		while (x != rows-1 || y != cols-1) {
-			Collections.shuffle(directions);
-			//System.out.print(x + " " + y);
+			int randDir = random.nextInt(4);
 			int trys = 0;
-			for (int[] direction : directions) {
+			for (int[] direction : directions[randDir]) {
 				trys++;
 				int dx = direction[0];
 		    	int dy = direction[1];
@@ -134,33 +134,11 @@ public class Labirints {
         	}
 			if (trys==4) {
 				int[] parent = new int[2];
-				while (true) {
-					parent = parents.get(x + "," + y);
-					if (parent == null)
-						break outer;
-					x = parent[0];
-					y = parent[1];
-					if (x+1<rows) {
-						if (l[x+1][y] == 0) {
-							break;
-						}
-					}
-					if (x-1>=0) {
-						if (l[x-1][y] == 0) {
-							break;
-						}
-					}
-					if (y+1<cols) {
-						if (l[x][y+1] == 0) {
-							break;
-						}
-					}
-					if (y-1>=0) {
-						if (l[x][y-1] == 0) {
-							break;
-						}
-					}
-				}
+				parent = parents.get(x + "," + y);
+				if (parent == null)
+					break outer;
+				x = parent[0];
+				y = parent[1];
 			}
 		}
 	}
