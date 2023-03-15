@@ -195,7 +195,7 @@ public class Labirints {
 	}
 	
 	public static Point[] dijkstra() {
-		int[][] depths = new int[rows][cols];
+		//int[][] depths = new int[rows][cols];
 		/*
 		// list of unvisited nodes priority queue?
 		PriorityQueue<Point> unvisited = new PriorityQueue<Point>(rows*cols, Comparator.comparing());
@@ -239,7 +239,7 @@ public class Labirints {
 
 		int v = rows*cols; // virsotnes
 		int[][] dist = new int[v][v]; // distanču starp virsotnēm masīvs
-		Point[][] next = new Point[v][v]; // ceļu masīvs
+		int[][] next = new int[v][v]; // next hop masīvs
 
 		int INF = v*v; // visām distancēm piešķirt maksimālo vērtību
 		for(int i=0; i<v; i++){
@@ -252,48 +252,48 @@ public class Labirints {
 			dist[i][i] = NUL;
 		}
 
-		int count = 0; // piešķirt ceļus virsotnēm pašām pie sevis
+		int count = 0; // piešķirt ceļus uz virsotnēm pašām pie sevis
 		int[][] dict = new int[rows][cols]; // ceļa karte
 		for(int i=0; i<rows; i++){
 			for(int j=0; j<cols; j++){
-				next[count][count] = new Point(i, j);
 				dict[i][j] = count;
+				next[count][count] = count;
 				count++;
 			}
 		}
 
 		// masīvu aizpildīšana pēc labirinta datiem
 		count = 0; // virsotņu skaitīšana
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
+		for (int i=0; i<rows; i++) {
+			for (int j=0; j<cols; j++) {
 				if(l[i][j]==0){ // ja virsotne nav siena
 					//up
 					if(i!=0)
 						if(l[i-1][j]==0){
 							dist[count][count-cols]=1;
-							next[count][count-cols]=new Point(i-1, j);
+							next[count][count-cols]=dict[i-1][j];
 						}
 					//right
 					if(j!=cols-1)
 						if(l[i][j+1]==0){
 							dist[count][count+1]=1;
-							next[count][count+1]=new Point(i, j+1);
+							next[count][count+1]=dict[i][j+1];
 						}
 					//down
 					if(i!=rows-1)
 						if(l[i+1][j]==0){
 							dist[count][count+cols]=1;
-							next[count][count+cols]=new Point(i+1, j);
+							next[count][count+cols]=dict[i+1][j];
 						}
 					//left
 					if(j!=0)
 						if(l[i][j-1]==0){
 							dist[count][count-1]=1;
-							next[count][count-1]=new Point(i, j-1);
+							next[count][count-1]=dict[i][j-1];
 						}
 				}else{ // ja virsotne ir siena
 					dist[count][count]=INF;
-					next[count][count]=null;
+					next[count][count]=0;
 				}
 				count++;
 		    }
@@ -311,43 +311,33 @@ public class Labirints {
 			}
 		}
 
-		// --- ceļa masīva izdruka - pārbaude
-		// for(int i=0; i<v; i++){
-		// 	for(int j=0; j<v; j++){
-		// 		if(next[i][j] != null)
-		// 			System.out.print(next[i][j].x + " " + next[i][j].y + "\t");
-		// 		else
-		// 			System.out.print(next[i][j] + "\t");
-		// 	}
-		// 	System.out.println();
-		// }
-		System.out.println();
-		// --- distanču masīva izdruka - pārbaude
-		// for(int i=0; i<v; i++){
-		// 	for(int j=0; j<v; j++){
-		// 		if(dist[i][j]==INF)
-		// 			System.out.print("X" + "\t");
-		// 		else
-		// 			System.out.print(dist[i][j] + "\t");
-		// 	}
-		// 	System.out.println();
-		// }
+		// rezultātu apkopojums
+		Point[] res = new Point[dist[0][v-1]+1]; // punktu masīvs
+		int[] path = new int[dist[0][v-1]+1]; // virsotņu masīvs
 
-		Point[] res = new Point[dist[0][v-1]+1];
 		count = 0;
-		res[count] = new Point();
-
-		Point start = next[0][v-1];
-		//Point finish = next[v-1][v-1];
-		if(start == null)
+		int start = 0; // starta virsotne
+		int finish = v-1; // finiša virsotne
+		if(next[start][finish] == 0)
 			return res;
-		else
-			res[++count] = start;
 
-		while(count != dist[0][v-1]) {
-			start = next[dict[start.x][start.y]][v-1];
-			res[++count] = start;
+		// būvējam ceļu no starta līdz finišam
+		while(start != finish) {
+			start = next[start][finish];
+			path[++count] = start;
 		}
+
+		count = 0; // otrā palīgvārdnīca
+		Point[] dict2 = new Point[v];
+		for(int i=0; i<rows; i++){
+			for(int j=0; j<cols; j++){
+				dict2[count++]=new Point(j, i);
+			}
+		}
+
+		count = 0; // pārvēršu ceļu no virsotnēm uz koordinātēm
+		for (int p : path)
+			res[count++] = dict2[p];
 
 		return res;
 	}
