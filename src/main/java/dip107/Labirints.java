@@ -84,6 +84,7 @@ public class Labirints {
 		System.out.println();
 		pprint(path);
 	}
+
 	// Ģenerēšanas funkcija
 	public static void generate() {
 		Random random = new Random();
@@ -139,6 +140,7 @@ public class Labirints {
 			x = parent[1];
 		}
 	}
+
 	// Iziešanas algoritmu tips
 	public static Point[] aStar() {
 	    PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(node -> node[3]));
@@ -341,6 +343,7 @@ public class Labirints {
 
 		return res;
 	}
+
 // Rin versija DFS
 // 	public static Point[] depthFirstSearch() {
 // 		int x = 0;
@@ -411,9 +414,9 @@ public class Labirints {
 		Set<Point> visited = new HashSet<>();
 		visited.add(new Point(0, 0));
 		return dfsHelper(currentPath, visited);
-}
+	}
 
-private static Point[] dfsHelper(List<Point> currentPath, Set<Point> visited) {
+	private static Point[] dfsHelper(List<Point> currentPath, Set<Point> visited) {
 		Point current = currentPath.get(currentPath.size() - 1);
 		int x = current.x;
 		int y = current.y;
@@ -440,9 +443,7 @@ private static Point[] dfsHelper(List<Point> currentPath, Set<Point> visited) {
 		}
 
 		return null; // no path found in this branch
-}
-
-
+	}
 
 	public static Point[] testArtis() {
 		// atrast ceļu, atgriež ceļa koordinātes
