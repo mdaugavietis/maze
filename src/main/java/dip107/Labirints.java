@@ -236,42 +236,119 @@ public class Labirints {
 	}
 
 	public static Point[] floydWarshall() {
-		// atrast ceļu, atgriež ceļa koordinātes
 
-		int v = rows*cols;
-		int[][] dist = new int[v][v];
+		int v = rows*cols; // virsotnes
+		int[][] dist = new int[v][v]; // distanču starp virsotnēm masīvs
+		Point[][] next = new Point[v][v]; // ceļu masīvs
 
-		int INF = Integer.MAX_VALUE;
+		int INF = v*v; // visām distancēm piešķirt maksimālo vērtību
 		for(int i=0; i<v; i++){
 			for(int j=0; j<v; j++){
 				dist[i][j] = INF;
 			}
 		}
+		int NUL = 0; // piešķirt nulle distanci starp vienādām virsotnēm
+		for(int i=0; i<v; i++){
+			dist[i][i] = NUL;
+		}
 
-		for(int i=0; i<v; i++)
-			dist[i][i] = 0;
-		
+		int count = 0; // piešķirt ceļus virsotnēm pašām pie sevis
+		int[][] dict = new int[rows][cols]; // ceļa karte
+		for(int i=0; i<rows; i++){
+			for(int j=0; j<cols; j++){
+				next[count][count] = new Point(i, j);
+				dict[i][j] = count;
+				count++;
+			}
+		}
 
+		// masīvu aizpildīšana pēc labirinta datiem
+		count = 0; // virsotņu skaitīšana
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				if(l[i][j]==0){ // ja virsotne nav siena
+					//up
+					if(i!=0)
+						if(l[i-1][j]==0){
+							dist[count][count-cols]=1;
+							next[count][count-cols]=new Point(i-1, j);
+						}
+					//right
+					if(j!=cols-1)
+						if(l[i][j+1]==0){
+							dist[count][count+1]=1;
+							next[count][count+1]=new Point(i, j+1);
+						}
+					//down
+					if(i!=rows-1)
+						if(l[i+1][j]==0){
+							dist[count][count+cols]=1;
+							next[count][count+cols]=new Point(i+1, j);
+						}
+					//left
+					if(j!=0)
+						if(l[i][j-1]==0){
+							dist[count][count-1]=1;
+							next[count][count-1]=new Point(i, j-1);
+						}
+				}else{ // ja virsotne ir siena
+					dist[count][count]=INF;
+					next[count][count]=null;
+				}
+				count++;
+		    }
+		}
+
+		// risinošā daļa
 		for (int k=0; k<v; k++) {
 			for (int i=0; i<v; i++) {
 				for (int j=0; j<v; j++) {
-					if (dist[i][k] + dist[k][j] < dist[i][j])
+					if (dist[i][k] + dist[k][j] < dist[i][j]){
 						dist[i][j] = dist[i][k] + dist[k][j];
+						next[i][j] = next[i][k];
+					}
 				}
 			}
 		}
 
-		for(int i=0; i<v; i++){
-			for(int j=0; j<v; j++){
-				if(dist[i][j]==INF)
-					System.out.print("X" + "\t");
-				else
-					System.out.print(dist[i][j] + "\t");
-			}
-			System.out.println();
+		// --- ceļa masīva izdruka - pārbaude
+		// for(int i=0; i<v; i++){
+		// 	for(int j=0; j<v; j++){
+		// 		if(next[i][j] != null)
+		// 			System.out.print(next[i][j].x + " " + next[i][j].y + "\t");
+		// 		else
+		// 			System.out.print(next[i][j] + "\t");
+		// 	}
+		// 	System.out.println();
+		// }
+		System.out.println();
+		// --- distanču masīva izdruka - pārbaude
+		// for(int i=0; i<v; i++){
+		// 	for(int j=0; j<v; j++){
+		// 		if(dist[i][j]==INF)
+		// 			System.out.print("X" + "\t");
+		// 		else
+		// 			System.out.print(dist[i][j] + "\t");
+		// 	}
+		// 	System.out.println();
+		// }
+
+		Point[] res = new Point[dist[0][v-1]+1];
+		count = 0;
+		res[count] = new Point();
+
+		Point start = next[0][v-1];
+		//Point finish = next[v-1][v-1];
+		if(start == null)
+			return res;
+		else
+			res[++count] = start;
+
+		while(count != dist[0][v-1]) {
+			start = next[dict[start.x][start.y]][v-1];
+			res[++count] = start;
 		}
 
-		Point[] res = new Point[1];
 		return res;
 	}
 // Rin versija DFS
