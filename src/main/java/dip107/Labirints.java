@@ -49,30 +49,42 @@ public class Labirints {
 		else {
 			generate();
 		}
+
 		pprint(null);
+		long startTime;
 		System.out.print("method number (1-5):");
 		int mode = sc.nextInt();
 		sc.close();
 		Point[] path;
 		switch (mode) {
 			case 1: //1. algoritms
+				startTime = System.nanoTime();
 				path = aStar();
 				break;
 			case 2: //2. algoritms
+				startTime = System.nanoTime();
 				path = dijkstra();
 				break;
 			case 3: //3. algoritms
+				startTime = System.nanoTime();
 				path = floydWarshall();
 				break;
 			case 4: //4. algoritms
+				startTime = System.nanoTime();
 				path = depthFirstSearch();
 				break;
 			case 5: //5. algoritms
+				startTime = System.nanoTime();
 				path = testArtis();
 				break;
 			default://netika izvēlēts neviens algoritms
+				startTime = System.nanoTime();
 				path = new Point[0]; // rezultātu izvade
 		}
+
+		// izpildes laika fiksēšana
+		long finishTime = System.nanoTime();
+		System.out.println((finishTime-startTime)/1000000 + " ms");
 
 		// rezultātu izvade
 		System.out.println("results:");
@@ -243,6 +255,7 @@ public class Labirints {
 		int[][] dist = new int[v][v]; // distanču starp virsotnēm masīvs
 		int[][] next = new int[v][v]; // next hop masīvs
 
+		// dist init
 		int INF = v*v; // visām distancēm piešķirt maksimālo vērtību
 		for(int i=0; i<v; i++){
 			for(int j=0; j<v; j++){
@@ -254,17 +267,20 @@ public class Labirints {
 			dist[i][i] = NUL;
 		}
 
-		int count = 0; // piešķirt ceļus uz virsotnēm pašām pie sevis
-		int[][] dict = new int[rows][cols]; // ceļa karte
+		// next init
+		int count = 0;
+		int[][] dict = new int[rows][cols]; // pirmā palīgvārdnīca ar virsotnēm
+		Point[] dict2 = new Point[v]; // otrā palīgvārdnīca ar punktiem
 		for(int i=0; i<rows; i++){
 			for(int j=0; j<cols; j++){
-				dict[i][j] = count;
-				next[count][count] = count;
+				dict[i][j] = count; // virsotņu numerācija
+				dict2[count] = new Point(j, i); // pirmais x vai y ?
+				next[count][count] = count;  // piešķirt ceļus uz virsotnēm pašām pie sevis
 				count++;
 			}
 		}
 
-		// masīvu aizpildīšana pēc labirinta datiem
+		// lielo masīvu aizpildīšana pēc labirinta datiem
 		count = 0; // virsotņu skaitīšana
 		for (int i=0; i<rows; i++) {
 			for (int j=0; j<cols; j++) {
@@ -317,24 +333,15 @@ public class Labirints {
 		Point[] res = new Point[dist[0][v-1]+1]; // punktu masīvs
 		int[] path = new int[dist[0][v-1]+1]; // virsotņu masīvs
 
-		count = 0;
 		int start = 0; // starta virsotne
 		int finish = v-1; // finiša virsotne
-		if(next[start][finish] == 0)
+		if(next[start][finish] == start)
 			return res;
 
-		// būvējam ceļu no starta līdz finišam
+		count = 0; // būvēju ceļu no starta līdz finišam
 		while(start != finish) {
 			start = next[start][finish];
 			path[++count] = start;
-		}
-
-		count = 0; // otrā palīgvārdnīca
-		Point[] dict2 = new Point[v];
-		for(int i=0; i<rows; i++){
-			for(int j=0; j<cols; j++){
-				dict2[count++]=new Point(j, i);
-			}
 		}
 
 		count = 0; // pārvēršu ceļu no virsotnēm uz koordinātēm
